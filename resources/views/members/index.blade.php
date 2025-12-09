@@ -191,5 +191,17 @@
         'message' => 'Are you sure you want to delete this member? This action cannot be undone.',
         'route' => 'members.destroy'
     ])
+
+    @if(session('generated_password') && session('generated_email'))
+        <div class="mb-4 p-4 rounded bg-green-100 border border-green-300">
+            <p class="font-semibold mb-1">Login credentials created:</p>
+            <p>Email: <strong>{{ session('generated_email') }}</strong></p>
+            <p>Temporary password: <strong>{{ session('generated_password') }}</strong></p>
+            <p class="text-sm text-gray-700 mt-2">
+                Please copy or send this password to the member now.
+                It will not be shown again after you leave or refresh this page.
+            </p>
+        </div>
+    @endif
 </div>
 @endsection
