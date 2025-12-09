@@ -6,12 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Laravel\Sanctum\HasApiTokens;
 
-class Member extends Authenticatable
+class Member extends Model
 {
-    use HasFactory, SoftDeletes, HasApiTokens;
+    use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'member_id',
@@ -19,7 +17,6 @@ class Member extends Authenticatable
         'middle_name',
         'last_name',
         'email',
-        'password',
         'phone',
         'birthdate',
         'age',
@@ -121,4 +118,3 @@ class Member extends Authenticatable
         return $query->where('purok', $purok);
     }
 }
-

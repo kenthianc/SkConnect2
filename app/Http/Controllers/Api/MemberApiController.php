@@ -3,10 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Member;
 use App\Models\Attendance;
-use Illuminate\Support\Facades\Hash;
 
 class MemberApiController extends Controller
 {
@@ -37,27 +35,6 @@ class MemberApiController extends Controller
                 ? url('storage/'.$member->profile_photo_path)
                 : null,
             'total_events_attended' => $totalEventsAttended,
-        ]);
-    }
-
-    public function login(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
-
-        $member = Member::where('email', $request->email)->first();
-
-        if (!$member || !Hash::check($request->password, $member->password)) {
-            return response()->json(['message' => 'Invalid credentials'], 401);
-        }
-
-        $token = $member->createToken('mobile')->plainTextToken;
-
-        return response()->json([
-            'token' => $token,
-            'member' => $member,
         ]);
     }
 }

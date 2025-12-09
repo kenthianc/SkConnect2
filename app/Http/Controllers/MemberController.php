@@ -7,10 +7,6 @@ use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\MembersExport;
 use App\Models\Attendance;
-use Illuminate\Support\Facades\Hash;
-use App\Mail\MemberPasswordMail;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Str;
 
 class MemberController extends Controller
 {
@@ -61,7 +57,6 @@ class MemberController extends Controller
             'middle_name' => 'nullable|string|max:255',
             'last_name' => 'required|string|max:255',
             'email' => 'required|email|unique:members,email',
-            'password' => 'required|string|min:6|confirmed',
             'phone' => 'required|string|max:20',
             'birthdate' => 'required|date',
             'age' => 'required|integer|min:15|max:30',
@@ -71,20 +66,6 @@ class MemberController extends Controller
             'guardian_name' => 'required|string|max:255',
             'guardian_contact' => 'required|string|max:20',
         ]);
-
-        // Generate a random password
-        $randomPassword = Str::random(8); // Generates an 8-character password
-
-        $member = Member::create([
-        'name' => $request->name,
-        'email' => $request->email,
-        'password' => Hash::make($request->password),
-        ]);
-
-        // Optionally, send the password to the member via email
-        Mail::to($member->email)->send(new MemberPasswordMail($randomPassword));
-
-    return response()->json(['message' => 'Member added successfully', 'member' => $member]);
 
         $validated['member_id'] = Member::generateMemberId();
         $validated['date_joined'] = now();
@@ -163,4 +144,5 @@ class MemberController extends Controller
     {
         return $this->hasMany(Attendance::class);
     }
+
 }
