@@ -1,0 +1,63 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\Member;
+use App\Models\Attendance;
+use Illuminate\Support\Facades\Hash;
+
+class MemberApiController extends Controller
+{
+    public function showByMembershipId(string $membership_id)
+    {
+        $member = Member::where('membership_id', $membership_id)->first();
+
+        if (! $member) {
+            return response()->json([
+                'message' => 'Member not found',
+            ], 404);
+        }
+
+        // Example simple stats
+        $totalEventsAttended = Attendance::where('member_id', $member->id)->count();
+
+        return response()->json([
+            'id'              => $member->id,
+            'membership_id'   => $member->membership_id,
+            'first_name'      => $member->first_name,
+            'last_name'       => $member->last_name,
+            'full_name'       => $member->full_name,
+            'gender'          => $member->gender,
+            'date_of_birth'   => optional($member->date_of_birth)->toDateString(),
+            'purok'           => $member->purok,
+            'email'           => $member->email,
+            'profile_photo'   => $member->profile_photo_path
+                ? url('storage/'.$member->profile_photo_path)
+                : null,
+            'total_events_attended' => $totalEventsAttended,
+        ]);
+    }
+
+    public function login(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        $member = Member::where('email', $request->email)->first();
+
+        if (!$member || !Hash::check($request->password, $member->password)) {
+            return response()->json(['message' => 'Invalid credentials'], 401);
+        }
+
+        $token = $member->createToken('mobile')->plainTextToken;
+
+        return response()->json([
+            'token' => $token,
+            'member' => $member,
+        ]);
+    }
+}
