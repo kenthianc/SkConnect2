@@ -2,8 +2,10 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use App\Models\User;
+use App\Http\Controllers\Api\ProfileController;
+use App\Http\Controllers\Api\NewsApiController;
 
 Route::post('/login', function (Request $request) {
     $credentials = $request->validate([
@@ -32,3 +34,10 @@ Route::post('/login', function (Request $request) {
         ],
     ]);
 });
+
+    //Profile route
+    Route::middleware('auth:sanctum')->get('/profile', [ProfileController::class, 'show']);
+
+    //News API routes for mobile app (FlutterFlow) 
+    Route::get('/news', [NewsApiController::class, 'index']);
+    Route::get('/news/{news}', [NewsApiController::class, 'show']); // optional detail endpoint
