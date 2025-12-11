@@ -4,7 +4,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
-use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\NewsApiController;
 use App\Http\Controllers\Api\MemberProfileController;
 use App\Http\Controllers\Api\EventApiController;
@@ -37,13 +36,6 @@ Route::post('/login', function (Request $request) {
     ]);
 });
 
-    //Profile route
-    Route::middleware('auth:sanctum')->get('/profile', [ProfileController::class, 'show']);
-
-    //Member Profile route
-    Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/me/member-profile', [MemberProfileController::class, 'show']);
-});
 
     //News API routes for mobile app (FlutterFlow) 
     Route::get('/news', [NewsApiController::class, 'index']);
