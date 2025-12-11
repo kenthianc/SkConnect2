@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Http\Controllers\Api\ProfileController;
 use App\Http\Controllers\Api\NewsApiController;
+use App\Http\Controllers\Api\MemberProfileController;
+use App\Http\Controllers\Api\EventApiController;
 
 Route::post('/login', function (Request $request) {
     $credentials = $request->validate([
@@ -38,6 +40,16 @@ Route::post('/login', function (Request $request) {
     //Profile route
     Route::middleware('auth:sanctum')->get('/profile', [ProfileController::class, 'show']);
 
+    //Member Profile route
+    Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/me/member-profile', [MemberProfileController::class, 'show']);
+});
+
     //News API routes for mobile app (FlutterFlow) 
     Route::get('/news', [NewsApiController::class, 'index']);
     Route::get('/news/{news}', [NewsApiController::class, 'show']); // optional detail endpoint
+
+
+    //Event API routes for mobile app (FlutterFlow)
+    Route::get('/events', [EventApiController::class, 'index']);
+    Route::get('/events/{event}', [EventApiController::class, 'show']); // optional detail endpoint

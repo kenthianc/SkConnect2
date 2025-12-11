@@ -116,7 +116,7 @@ class AttendanceController extends Controller
         // 5) Send data to n8n webhook for automatic e-cert sending
         $response = Http::post('http://localhost:5678/webhook-test/send-certificate', [
             'member_id' => $member->member_id,
-            'name' => $member->last_name, // Adjust if you use a different attribute for the full name
+            'name' => trim(implode(' ', array_filter([$member->first_name ?? '', $member->middle_name ?? '', $member->last_name ?? '']))), // Adjust if you use a different attribute for the full name
             'email' => $member->email,
             'event' => $event->title,
             'date' => $event->date->toDateString(),
