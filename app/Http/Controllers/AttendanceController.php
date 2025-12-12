@@ -109,7 +109,7 @@ class AttendanceController extends Controller
         $attendance = Attendance::create([
             'event_id'      => $event->id,
             'member_id'     => $member->id,
-            'status'        => 'present',
+            'status'        => 'Present',
             'check_in_time' => now(),
         ]);
 

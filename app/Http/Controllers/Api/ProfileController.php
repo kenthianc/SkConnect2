@@ -8,6 +8,19 @@ use App\Models\Member;
 
 class ProfileController extends Controller
 {
+    public function me(Request $request)
+    {
+        $user = $request->user();
+
+        return response()->json([
+            'user' => [
+                'id'    => $user->id,
+                'name'  => $user->name,
+                'email' => $user->email,
+            ],
+        ]);
+    }
+
     public function show(Request $request)
     {
         $user = $request->user(); // the authenticated user from Sanctum

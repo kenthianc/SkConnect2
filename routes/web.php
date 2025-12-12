@@ -19,6 +19,10 @@ use App\Http\Controllers\ChatbotController;
 // Guest routes (login/register) - handled by Laravel auth
 Auth::routes();
 
+// Public legal pages
+Route::view('/terms', 'legal.terms')->name('legal.terms');
+Route::view('/privacy', 'legal.privacy')->name('legal.privacy');
+
 // Redirect root to dashboard or login
 Route::get('/', function () {
     return redirect()->route('dashboard');

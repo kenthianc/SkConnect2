@@ -6,42 +6,6 @@
     </div>
     
     <div class="flex items-center space-x-4">
-        <!-- Notifications -->
-        <div x-data="{ open: false }" class="relative">
-            <button 
-                @click="open = !open"
-                class="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-            >
-                <i data-lucide="bell" class="w-5 h-5"></i>
-                <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-            </button>
-            
-            <!-- Notifications Dropdown -->
-            <div 
-                x-show="open"
-                @click.away="open = false"
-                x-cloak
-                class="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50"
-            >
-                <div class="px-4 py-2 border-b border-gray-200">
-                    <h3 class="text-gray-900">Notifications</h3>
-                </div>
-                <div class="max-h-96 overflow-y-auto">
-                    <a href="#" class="block px-4 py-3 hover:bg-gray-50 transition-colors">
-                        <p class="text-sm text-gray-900">New member registered</p>
-                        <p class="text-xs text-gray-500 mt-1">5 minutes ago</p>
-                    </a>
-                    <a href="#" class="block px-4 py-3 hover:bg-gray-50 transition-colors">
-                        <p class="text-sm text-gray-900">Event reminder: Clean-up Drive</p>
-                        <p class="text-xs text-gray-500 mt-1">1 hour ago</p>
-                    </a>
-                </div>
-                <div class="px-4 py-2 border-t border-gray-200">
-                    <a href="#" class="text-sm text-blue-600 hover:text-blue-700">View all notifications</a>
-                </div>
-            </div>
-        </div>
-        
         <!-- User Profile Dropdown -->
         <div x-data="{ open: false, showLogoutModal: false }" class="relative">
             <button 

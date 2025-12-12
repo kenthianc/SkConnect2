@@ -80,10 +80,12 @@ class Member extends Model
      */
     public function getAttendanceRateAttribute()
     {
-        $total = $this->attendance()->count();
-        if ($total === 0) return 0;
+        $total = $this->attendances()->count();
+        if ($total === 0) {
+            return 0;
+        }
 
-        $present = $this->attendance()->where('status', 'Present')->count();
+        $present = $this->attendances()->where('status', 'Present')->count();
         return round(($present / $total) * 100, 1);
     }
 

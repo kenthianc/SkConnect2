@@ -68,11 +68,21 @@ class Event extends Model
      */
     public function getAttendanceRateAttribute()
     {
-        $total = $this->attendance()->count();
-        if ($total === 0) return 0;
-
         $present = $this->attendance()->where('status', 'Present')->count();
-        return round(($present / $total) * 100, 1);
+
+        // If a target is set, base the rate on it (1 present out of 100 target = 1%).
+        $target = (int) ($this->target_participants ?? 0);
+        if ($target > 0) {
+            return round(($present / $target) * 100, 1);
+        }
+
+        // Fallback: if no target defined, base the rate on recorded attendance.
+        $totalRecorded = $this->attendance()->count();
+        if ($totalRecorded === 0) {
+            return 0;
+        }
+
+        return round(($present / $totalRecorded) * 100, 1);
     }
 
     /**

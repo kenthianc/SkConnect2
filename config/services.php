@@ -42,4 +42,13 @@ return [
         'model'    => env('OLLAMA_MODEL', 'llama3.1:8b'),
     ],
 
+    'n8n' => [
+        // Example: http://localhost:5678/webhook-test/send-account
+        // For remote/mobile testing, you can point this to an n8n webhook URL exposed via ngrok.
+        'send_account_webhook' => env(
+            'N8N_SEND_ACCOUNT_WEBHOOK_URL',
+            env('N8N_ACCOUNT_WEBHOOK', 'http://localhost:5678/webhook-test/send-account')
+        ),
+    ],
+
 ];
