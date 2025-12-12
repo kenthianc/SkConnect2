@@ -4,19 +4,46 @@
 
 @section('content')
 <div class="min-h-screen flex">
-    <!-- Left Side - SK Logo -->
-    <div class="hidden lg:flex lg:w-1/2 bg-cover bg-center items-center justify-center p-12 fade-in"
-     style="background-image: url('{{ asset('images/LoginPage.png') }}');">
+<!-- Left Side - SK Logo Slideshow -->
+<div class="hidden lg:flex lg:w-1/2 items-center justify-center p-0 overflow-hidden">
+    <div class="relative w-full h-full overflow-hidden">
+       <!-- Fade Slideshow (replace images later as needed) -->
+       <div class="fade-slide slide-1 bg-cover bg-center"
+           style="background-image: url('{{ asset('images/image1.png') }}');"></div>
+       <div class="fade-slide slide-2 bg-cover bg-center"
+           style="background-image: url('{{ asset('images/image2.png') }}');"></div>
+       <div class="fade-slide slide-3 bg-cover bg-center"
+           style="background-image: url('{{ asset('images/image3.png') }}');"></div>
     </div>
+</div>
+
+
 
 <style>
-    @keyframes fadeIn {
-        from { opacity: 0; }
-        to { opacity: 1; }
+    .fade-slide {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        animation: fadeShow 12s infinite ease-in-out;
+        will-change: opacity;
     }
-    .fade-in {
-        animation: fadeIn 1.0s ease-in-out;
+
+    .fade-slide.slide-1 { animation-delay: 0s; }
+    .fade-slide.slide-2 { animation-delay: 4s; }
+    .fade-slide.slide-3 { animation-delay: 8s; }
+
+    /* 12s total, 3 slides x 4s each
+       Each slide: fade in -> hold -> fade out
+    */
+    @keyframes fadeShow {
+        0%   { opacity: 0; }
+        10%  { opacity: 1; }
+        30%  { opacity: 1; }
+        40%  { opacity: 0; }
+        100% { opacity: 0; }
     }
+
+
 </style>
     
     <!-- Right Side - Register Form -->
@@ -174,7 +201,7 @@
                                 class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1"
                             >
                             <span class="ml-2 text-sm text-gray-600">
-                                I agree to the <a href="#" class="text-blue-600 hover:text-blue-700">Terms and Conditions</a> and <a href="#" class="text-blue-600 hover:text-blue-700">Privacy Policy</a>
+                                I agree to the <a href="{{ route('legal.terms') }}" class="text-blue-600 hover:text-blue-700">Terms and Conditions</a> and <a href="{{ route('legal.privacy') }}" class="text-blue-600 hover:text-blue-700">Privacy Policy</a>
                             </span>
                         </label>
                     </div>

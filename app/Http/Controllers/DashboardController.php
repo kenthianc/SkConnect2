@@ -30,11 +30,25 @@ class DashboardController extends Controller
         $upcomingEvents = Event::upcoming()->count();
         $completedEvents = Event::completed()->count();
         
-        // Calculate attendance rate
-        $totalAttendance = Attendance::count();
-        $presentAttendance = Attendance::where('status', 'Present')->count();
-        $attendanceRate = $totalAttendance > 0 
-            ? round(($presentAttendance / $totalAttendance) * 100, 1)
+        // Calculate attendance rate (average across all events)
+        // Per-event rate: (present_count / target_participants) * 100
+        $eventsForRate = Event::completed()
+            ->withCount([
+                'attendances as present_count' => function ($q) {
+                    $q->where('status', 'Present');
+                },
+            ])
+            ->get(['id', 'target_participants']);
+
+        $attendanceRate = $eventsForRate->count() > 0
+            ? round($eventsForRate->avg(function ($event) {
+                $target = (int) ($event->target_participants ?? 0);
+                if ($target <= 0) {
+                    return 0;
+                }
+
+                return ($event->present_count / $target) * 100;
+            }), 1)
             : 0;
         
         $totalNews = News::count();

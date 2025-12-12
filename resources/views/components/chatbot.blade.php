@@ -16,16 +16,29 @@
     </button>
 
     <!-- Chat Panel -->
-    <template x-if="isOpen">
-        <div class="fixed inset-0 z-50">
-            <!-- Backdrop -->
-            <div 
-                class="absolute inset-0 bg-black/40 transition-opacity"
-                @click="isOpen = false"
-            ></div>
+    <div x-show="isOpen" x-cloak class="fixed inset-0 z-50">
+        <!-- Backdrop -->
+        <div
+            class="absolute inset-0 bg-black/40"
+            x-transition:enter="transition-opacity ease-out duration-200"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition-opacity ease-in duration-150"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+            @click="isOpen = false"
+        ></div>
 
-            <!-- Chat Panel -->
-            <div class="fixed right-0 top-0 bottom-0 w-full sm:w-[400px] bg-white shadow-2xl flex flex-col">
+        <!-- Chat Panel -->
+        <div
+            class="fixed right-0 top-0 bottom-0 w-full sm:w-[400px] bg-white shadow-2xl flex flex-col"
+            x-transition:enter="transform transition ease-out duration-200"
+            x-transition:enter-start="translate-x-full"
+            x-transition:enter-end="translate-x-0"
+            x-transition:leave="transform transition ease-in duration-150"
+            x-transition:leave-start="translate-x-0"
+            x-transition:leave-end="translate-x-full"
+        >
                 <!-- Header -->
                 <div class="bg-gradient-to-r from-blue-600 to-blue-700 text-white p-4 flex items-center justify-between">
                     <div class="flex items-center space-x-3">
@@ -33,7 +46,7 @@
                             <img src="{{ asset('images/ollama.png') }}" alt="SK Logo" class="w-8 h-7">
                         </div>
                         <div>
-                            <h3 class="font-semibold">SK AI Assistant</h3>
+                            <h3 class="font-semibold">Ken</h3>
                             <p class="text-xs text-blue-100">Powered by Ollama</p>
                         </div>
                     </div>
@@ -68,7 +81,7 @@
                                 <template x-if="message.type === 'ai'">
                                     <div class="flex items-center space-x-2 mb-2">
                                         <i data-lucide="sparkles" class="w-4 h-4 text-blue-600"></i>
-                                        <span class="text-xs text-gray-500">AI Assistant</span>
+                                        <span class="text-xs text-gray-500">Ken</span>
                                     </div>
                                 </template>
                                 
@@ -91,7 +104,12 @@
                             <div class="bg-white rounded-2xl px-4 py-3 shadow-sm border border-gray-100">
                                 <div class="flex items-center space-x-2">
                                     <i data-lucide="loader-2" class="w-4 h-4 text-blue-600 animate-spin"></i>
-                                    <span class="text-sm text-gray-600">AI is thinking...</span>
+                                    <span class="text-sm text-gray-600">
+                                        Ken is thinking
+                                        <span class="chatbot-typing-dots" aria-hidden="true">
+                                            <span>.</span><span>.</span><span>.</span>
+                                        </span>
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -112,7 +130,8 @@
                             <button
                                 type="submit"
                                 :disabled="!input.trim() || isLoading"
-                                class="px-4 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                class="flex-shrink-0 inline-flex items-center justify-center w-12 h-12 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                aria-label="Send message"
                             >
                                 <i data-lucide="send" class="w-5 h-5"></i>
                             </button>
@@ -133,8 +152,27 @@
                 </div>
             </div>
         </div>
-    </template>
+    </div>
 </div>
+
+@push('styles')
+<style>
+    .chatbot-typing-dots span {
+        display: inline-block;
+        opacity: 0.2;
+        animation: chatbotDots 1.2s infinite;
+    }
+
+    .chatbot-typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .chatbot-typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes chatbotDots {
+        0%, 20% { opacity: 0.2; }
+        50% { opacity: 1; }
+        100% { opacity: 0.2; }
+    }
+</style>
+@endpush
 
 @push('scripts')
 <script>
@@ -150,9 +188,30 @@ function chatbot() {
             this.messages = [{
                 id: 1,
                 type: 'ai',
-                content: "Hi! I'm your SK Connect AI Assistant powered by Ollama. Ask me anything about your members, events, attendance, or analytics! 🎯",
+                content: "Hi! I'm Ken, your AI assistant powered by Ollama. Ask me anything about your members, events, attendance, or analytics! 🎯",
                 time: this.getCurrentTime()
             }];
+
+            // Ensure icons render for initial content
+            this.refreshIcons();
+
+            // Re-render icons when opening/closing (modal content is dynamic)
+            this.$watch('isOpen', (value) => {
+                if (value) {
+                    this.refreshIcons();
+                }
+            });
+        },
+
+        refreshIcons() {
+            // Lucide replaces <i data-lucide="..."> with SVG.
+            // Because parts of the chat render dynamically (x-show / x-for / x-if),
+            // we need to refresh icons after DOM updates.
+            this.$nextTick(() => {
+                if (window.lucide && typeof window.lucide.createIcons === 'function') {
+                    window.lucide.createIcons();
+                }
+            });
         },
         
         async sendMessage() {
@@ -169,6 +228,8 @@ function chatbot() {
             const query = this.input;
             this.input = '';
             this.isLoading = true;
+
+            this.refreshIcons();
             
             this.scrollToBottom();
             
@@ -194,6 +255,7 @@ function chatbot() {
                     });
                     
                     this.isLoading = false;
+                    this.refreshIcons();
                     this.scrollToBottom();
                 }, 1000);
                 
@@ -206,6 +268,7 @@ function chatbot() {
                     time: this.getCurrentTime()
                 });
                 this.isLoading = false;
+                this.refreshIcons();
             }
         },
         

@@ -7,83 +7,46 @@
 <!-- Left Side - SK Logo Slideshow -->
 <div class="hidden lg:flex lg:w-1/2 items-center justify-center p-0 overflow-hidden">
     <div class="relative w-full h-full overflow-hidden">
-        <div class="slides flex w-[300%] h-full animate-slide">
-            <!-- Slide 1 -->
-            <div class="w-1/3 h-full bg-cover bg-center"
-                 style="background-image: url('{{ asset('images/LoginPage.png') }}');">
-            </div>
-
-            <!-- Slide 2 -->
-            <div class="w-1/3 h-full bg-cover bg-center"
-                 style="background-image: url('{{ asset('images/LoginPage.png') }}');">
-            </div>
-
-            <!-- Slide 3 -->
-            <div class="w-1/3 h-full bg-cover bg-center"
-                 style="background-image: url('{{ asset('images/LoginPage.png') }}');">
-            </div>
-        </div>
+       <!-- Fade Slideshow (replace images later as needed) -->
+       <div class="fade-slide slide-1 bg-cover bg-center"
+           style="background-image: url('{{ asset('images/image1.png') }}');"></div>
+       <div class="fade-slide slide-2 bg-cover bg-center"
+           style="background-image: url('{{ asset('images/image2.png') }}');"></div>
+       <div class="fade-slide slide-3 bg-cover bg-center"
+           style="background-image: url('{{ asset('images/image3.png') }}');"></div>
     </div>
 </div>
 
 
 
 <style>
-    .slides {
-        animation: slideShow 12s infinite ease-in-out;
-        will-change: transform;
+    .fade-slide {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        animation: fadeShow 12s infinite ease-in-out;
+        will-change: opacity;
     }
 
-    /* Total 12s:
-       - 3s pause on each slide
-       - ~1s sliding between slides
+    .fade-slide.slide-1 { animation-delay: 0s; }
+    .fade-slide.slide-2 { animation-delay: 4s; }
+    .fade-slide.slide-3 { animation-delay: 8s; }
+
+    /* 12s total, 3 slides x 4s each
+       Each slide: fade in -> hold -> fade out
     */
-    @keyframes slideShow {
-        /* Slide 1 visible */
-        0% {
-            transform: translateX(0);
-        }
-        20% {
-            transform: translateX(0);
-        }
-
-        /* Slide 1 -> Slide 2 */
-        25% {
-            transform: translateX(-100%);
-        }
-
-        /* Slide 2 visible */
-        45% {
-            transform: translateX(-100%);
-        }
-
-        /* Slide 2 -> Slide 3 */
-        50% {
-            transform: translateX(-200%);
-        }
-
-        /* Slide 3 visible */
-        70% {
-            transform: translateX(-200%);
-        }
-
-        /* Slide 3 -> back to Slide 1 */
-        75% {
-            transform: translateX(0);
-        }
-
-        /* Slide 1 visible again */
-        100% {
-            transform: translateX(0);
-        }
+    @keyframes fadeShow {
+        0%   { opacity: 0; }
+        10%  { opacity: 1; }
+        30%  { opacity: 1; }
+        40%  { opacity: 0; }
+        100% { opacity: 0; }
     }
 
 
 </style>
 
 
-
-    
     <!-- Right Side - Login Form -->
     <div class="w-full lg:w-1/2 flex items-center justify-center p-8 bg-gray-50">
         <div class="w-full max-w-md">
